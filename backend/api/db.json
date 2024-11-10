@@ -1,0 +1,149 @@
+{
+    "usuarios": [
+      {
+        "id": 1,
+        "nome": "usuario1",
+        "senha": "senha123",
+        "pastas": [
+          {
+            "id": 101,
+            "nome": "pastaUsuario1",
+            "senhas": [
+              {"id": 1, "nome": "caramelo", "senha": "senha123"},
+              {"id": 2, "nome": "chocolate", "senha": "senha456"},
+              {"id": 3, "nome": "morango", "senha": "senha789"}
+            ]
+          },
+          {
+            "id": 102,
+            "nome": "pastaUsuario1Backup",
+            "senhas": [
+              {"id": 4, "nome": "baunilha", "senha": "senha987"},
+              {"id": 5, "nome": "coco", "senha": "senha654"}
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "nome": "usuario2",
+        "senha": "senha234",
+        "pastas": [
+          {
+            "id": 103,
+            "nome": "pastaUsuario2",
+            "senhas": [
+              {"id": 1, "nome": "abacaxi", "senha": "senha234"},
+              {"id": 2, "nome": "uva", "senha": "senha567"},
+              {"id": 3, "nome": "coco", "senha": "senha890"}
+            ]
+          },
+          {
+            "id": 104,
+            "nome": "pastaUsuario2Backup",
+            "senhas": [
+              {"id": 4, "nome": "laranja", "senha": "senha321"},
+              {"id": 5, "nome": "pêra", "senha": "senha654"}
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "nome": "usuario3",
+        "senha": "senha345",
+        "pastas": [
+          {
+            "id": 105,
+            "nome": "pastaUsuario3",
+            "senhas": [
+              {"id": 1, "nome": "manga", "senha": "senha345"},
+              {"id": 2, "nome": "kiwi", "senha": "senha678"},
+              {"id": 3, "nome": "goiaba", "senha": "senha012"}
+            ]
+          },
+          {
+            "id": 106,
+            "nome": "pastaUsuario3Backup",
+            "senhas": [
+              {"id": 4, "nome": "maracuja", "senha": "senha123"},
+              {"id": 5, "nome": "mamão", "senha": "senha456"}
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "nome": "usuario4",
+        "senha": "senha456",
+        "pastas": [
+          {
+            "id": 107,
+            "nome": "pastaUsuario4",
+            "senhas": [
+              {"id": 1, "nome": "pêra", "senha": "senha456"},
+              {"id": 2, "nome": "cabeludo", "senha": "senha789"},
+              {"id": 3, "nome": "melancia", "senha": "senha101"}
+            ]
+          },
+          {
+            "id": 108,
+            "nome": "pastaUsuario4Backup",
+            "senhas": [
+              {"id": 4, "nome": "cabeludo", "senha": "senha321"},
+              {"id": 5, "nome": "cabeludo2", "senha": "senha654"}
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "nome": "usuario5",
+        "senha": "senha567",
+        "pastas": [
+          {
+            "id": 109,
+            "nome": "pastaUsuario5",
+            "senhas": [
+              {"id": 1, "nome": "banana", "senha": "senha567"},
+              {"id": 2, "nome": "melao", "senha": "senha890"},
+              {"id": 3, "nome": "laranja", "senha": "senha234"}
+            ]
+          },
+          {
+            "id": 110,
+            "nome": "pastaUsuario5Backup",
+            "senhas": [
+              {"id": 4, "nome": "cabeludo", "senha": "senha345"},
+              {"id": 5, "nome": "abacaxi", "senha": "senha678"}
+            ]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "nome": "usuario6",
+        "senha": "senha678",
+        "pastas": [
+          {
+            "id": 111,
+            "nome": "pastaUsuario6",
+            "senhas": [
+              {"id": 1, "nome": "limão", "senha": "senha678"},
+              {"id": 2, "nome": "abacate", "senha": "senha123"},
+              {"id": 3, "nome": "cabeludo", "senha": "senha456"}
+            ]
+          },
+          {
+            "id": 112,
+            "nome": "pastaUsuario6Backup",
+            "senhas": [
+              {"id": 4, "nome": "cabeludo3", "senha": "senha789"},
+              {"id": 5, "nome": "cabeludo4", "senha": "senha101"}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
