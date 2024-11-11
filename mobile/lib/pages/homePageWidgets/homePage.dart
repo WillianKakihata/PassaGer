@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/pages/senhasPageWidgets/PaginaInicial.dart';
+import 'package:mobile/pages/armazemPageWidgets/paginaPastas.dart';
 
 class Homepage extends StatelessWidget {
   @override
@@ -10,10 +10,10 @@ class Homepage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'BEM - VINDO AO PASSAGER', 
+              'BEM - VINDO AO PASSAGER',
               style: TextStyle(fontSize: 40.0, color: Color(0xFF259DF2)),
             ),
-            SizedBox(height: 20), 
+            SizedBox(height: 20),
             Botaohomepage(),
           ],
         ),
@@ -29,10 +29,10 @@ class Botaohomepage extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PaginaInicial()),
+          MaterialPageRoute(builder: (context) => PaginaPastas()),
         );
       },
-      child: Text('Ir para Senhas'),
+      child: Text('Ir para Pastas'),
     );
   }
 }
