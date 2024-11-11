@@ -19,7 +19,7 @@ class _SenhasPageState extends State<SenhasPage> {
   @override
   void initState() {
     super.initState();
-    futureSenhas = widget.senhaService.getAllSenhas(widget.pasta.id);
+    futureSenhas = widget.senhaService.getSenhasByPastaId(widget.pasta.id);
   }
 
   @override
@@ -39,9 +39,7 @@ class _SenhasPageState extends State<SenhasPage> {
             return Center(child: Text('Nenhuma senha encontrada.'));
           }
 
-          List<Senha> senhas = snapshot.data!
-              .where((senha) => senha.pastaId == widget.pasta.id)
-              .toList();
+          List<Senha> senhas = snapshot.data!;
 
           return ListView.builder(
             itemCount: senhas.length,
@@ -81,7 +79,7 @@ class _SenhasPageState extends State<SenhasPage> {
     try {
       await widget.senhaService.criarSenha(widget.pasta.id, novaSenha);
       setState(() {
-        futureSenhas = widget.senhaService.getAllSenhas(widget.pasta.id);
+        futureSenhas = widget.senhaService.getSenhasByPastaId(widget.pasta.id);
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,11 +88,11 @@ class _SenhasPageState extends State<SenhasPage> {
     }
   }
 
-  void _excluirSenha(String id) async {
+  void _excluirSenha(String senhaId) async {
     try {
-      await widget.senhaService.excluirSenha(widget.pasta.id, id);
+      await widget.senhaService.excluirSenha(widget.pasta.id, senhaId);
       setState(() {
-        futureSenhas = widget.senhaService.getAllSenhas(widget.pasta.id);
+        futureSenhas = widget.senhaService.getSenhasByPastaId(widget.pasta.id);
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -141,11 +139,10 @@ class _SenhasPageState extends State<SenhasPage> {
                   senha: senhaController.text,
                   pastaId: senha.pastaId,
                 );
-
                 try {
                   await widget.senhaService.atualizarSenha(widget.pasta.id, senhaAtualizada);
                   setState(() {
-                    futureSenhas = widget.senhaService.getAllSenhas(widget.pasta.id);
+                    futureSenhas = widget.senhaService.getSenhasByPastaId(widget.pasta.id);
                   });
                   Navigator.pop(context);
                 } catch (e) {
