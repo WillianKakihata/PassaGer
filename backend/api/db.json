@@ -1,31 +1,28 @@
 {
   "pastas": [
     {
-      "id": "0",
-      "nome": "Pasta 1",
-      "senhas": [
-        {
-          "id": 1,
-          "nome": "senha1",
-          "senha": "12345"
-        }
-      ]
+      "id": "1",
+      "nome": "Pasta 23232",
+      "senhas": []
     },
     {
+      "id": "0",
+      "nome": "Nova Pasta",
+      "senhas": []
+    }
+  ],
+  "senhas": [
+    {
       "id": "1",
-      "nome": "Pasta 2",
-      "senhas": [
-        {
-          "id": 1,
-          "nome": "senha2",
-          "senha": "67890"
-        }
-      ]
+      "nome": "senha1",
+      "senha": "12345",
+      "pastaId": null
     },
     {
       "id": "2",
-      "nome": "Nova PastaDA",
-      "senhas": []
+      "nome": "senha2d",
+      "senha": "67890",
+      "pastaId": "1"
     }
   ]
 }

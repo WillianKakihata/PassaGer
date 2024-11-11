@@ -3,47 +3,49 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/model/senha.dart';
 
 class SenhaService {
-  final String baseUrl;
   final http.Client client;
+  final String baseUrl;
 
-  SenhaService({required this.baseUrl, required this.client});
+  SenhaService(this.client, {this.baseUrl = "http://localhost:3000/pastas"});
 
-  Future<List<Senha>> getAllSenhas(int pastaId) async {
-    final response = await client.get(Uri.parse('$baseUrl/pastas/$pastaId/senhas'));
+  Future<List<Senha>> getAllSenhas(String pastaId) async {
+    final response = await client.get(Uri.parse('$baseUrl/$pastaId/senhas'));
     if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => Senha.fromJson(json)).toList();
+      List<dynamic> data = json.decode(response.body);
+      return data.map((e) => Senha.fromJson(e)).toList();
     } else {
-      throw Exception('Erro ao carregar senhas');
+      throw Exception("Erro ao carregar senhas");
     }
   }
 
-  Future<void> criarSenha(Senha senha) async {
+  Future<void> criarSenha(String pastaId, Senha senha) async {
     final response = await client.post(
-      Uri.parse('$baseUrl/senhas'),
+      Uri.parse('$baseUrl/$pastaId/senhas'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(senha.toJson()),
+      body: json.encode(senha.toJson()),
     );
     if (response.statusCode != 201) {
-      throw Exception('Erro ao criar senha');
+      throw Exception("Erro ao criar senha");
     }
   }
 
-  Future<void> atualizarSenha(int id, Senha senha) async {
+  Future<void> atualizarSenha(String pastaId, Senha senha) async {
     final response = await client.put(
-      Uri.parse('$baseUrl/senhas/$id'),
+      Uri.parse('$baseUrl/$pastaId/senhas/${senha.id}'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(senha.toJson()),
+      body: json.encode(senha.toJson()),
     );
     if (response.statusCode != 200) {
-      throw Exception('Erro ao atualizar senha');
+      throw Exception("Erro ao atualizar senha");
     }
   }
 
-  Future<void> excluirSenha(int id) async {
-    final response = await client.delete(Uri.parse('$baseUrl/senhas/$id'));
+  Future<void> excluirSenha(String pastaId, String senhaId) async {
+    final response = await client.delete(
+      Uri.parse('$baseUrl/$pastaId/senhas/$senhaId'),
+    );
     if (response.statusCode != 200) {
-      throw Exception('Erro ao excluir senha');
+      throw Exception("Erro ao excluir senha");
     }
   }
 }

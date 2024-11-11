@@ -20,15 +20,19 @@ class PastaService {
   }
 
   Future<void> criarPasta(Pasta pasta) async {
-    final response = await client.post(
-      Uri.parse(baseUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(pasta.toJson()),
-    );
-    if (response.statusCode != 201) {
-      throw Exception("Erro ao criar pasta");
-    }
+  final response = await client.post(
+    Uri.parse(baseUrl),
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode(pasta.toJson()),
+  );
+
+  if (response.statusCode == 201) {
+    var responseJson = json.decode(response.body);
+    pasta.id = responseJson['id'].toString(); // Atualiza o ID gerado pelo servidor
+  } else {
+    throw Exception("Erro ao criar pasta");
   }
+}
 
   Future<void> atualizarPasta(Pasta pasta) async {
     final response = await client.put(
@@ -41,10 +45,19 @@ class PastaService {
     }
   }
 
-  Future<void> excluirPasta(int id) async {
+  Future<void> excluirPasta(String id) async {
     final response = await client.delete(Uri.parse('$baseUrl/$id'));
     if (response.statusCode != 200) {
       throw Exception("Erro ao excluir pasta");
+    }
+  }
+
+  Future<void> excluirSenha(String pastaId, int senhaId) async {
+    final response = await client.delete(
+      Uri.parse('$baseUrl/$pastaId/senhas/$senhaId'),
+    );
+    if (response.statusCode != 200) {
+      throw Exception("Erro ao excluir senha");
     }
   }
 }

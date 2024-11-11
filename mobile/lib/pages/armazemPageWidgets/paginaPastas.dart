@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/model/pasta.dart';
+import 'package:mobile/pages/senhasPageWidgets/senhas_page.dart';
 import 'package:mobile/service/pasta_service.dart';
+import 'package:mobile/service/senha_service.dart';
 import 'package:http/http.dart' as http;
 
 class PaginaPastas extends StatefulWidget {
@@ -10,12 +12,14 @@ class PaginaPastas extends StatefulWidget {
 
 class _PaginaPastasState extends State<PaginaPastas> {
   late PastaService pastaService;
+  late SenhaService senhaService;
   late Future<List<Pasta>> futurePastas;
 
   @override
   void initState() {
     super.initState();
     pastaService = PastaService(http.Client());
+    senhaService = SenhaService(http.Client());
     futurePastas = pastaService.getAllPastas();
   }
 
@@ -45,19 +49,22 @@ class _PaginaPastasState extends State<PaginaPastas> {
               return ListTile(
                 title: Text(pasta.nome),
                 subtitle: Text('${pasta.senhas.length} senhas'),
+                onTap: () {
+                  _navegarParaSenhas(context, pasta);
+                },
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       icon: Icon(Icons.edit),
                       onPressed: () {
-                        _editarPasta(context, pasta);
+                        _editarPasta(pasta);  // Editar pasta ao clicar no ícone de edição
                       },
                     ),
                     IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () {
-                        _excluirPasta(pasta.id);
+                        _excluirPasta(pasta.id);  // Passando 'id' como String
                       },
                     ),
                   ],
@@ -74,12 +81,26 @@ class _PaginaPastasState extends State<PaginaPastas> {
     );
   }
 
+  // Método para navegar para a tela de senhas
+  void _navegarParaSenhas(BuildContext context, Pasta pasta) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SenhasPage(
+          pasta: pasta,
+          senhaService: senhaService,
+        ),
+      ),
+    );
+  }
+
+  // Método para criar uma nova pasta
   void _criarPasta() async {
-    final Pasta novaPasta = Pasta(id: 0, nome: 'Nova Pasta', senhas: []);
+    final Pasta novaPasta = Pasta(id: '0', nome: 'Nova Pasta', senhas: []);  // Alteração do id para String
     try {
-      await pastaService.criarPasta(novaPasta);
+      await pastaService.criarPasta(novaPasta);  // Cria a pasta no servidor
       setState(() {
-        futurePastas = pastaService.getAllPastas();
+        futurePastas = pastaService.getAllPastas();  // Recarrega a lista de pastas
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,11 +109,12 @@ class _PaginaPastasState extends State<PaginaPastas> {
     }
   }
 
-  void _excluirPasta(int id) async {
+  // Método para excluir uma pasta
+  void _excluirPasta(String id) async {  // Alterado para usar String no id
     try {
-      await pastaService.excluirPasta(id);
+      await pastaService.excluirPasta(id);  
       setState(() {
-        futurePastas = pastaService.getAllPastas();
+        futurePastas = pastaService.getAllPastas();  // Recarrega a lista de pastas
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -101,46 +123,52 @@ class _PaginaPastasState extends State<PaginaPastas> {
     }
   }
 
+  // Método para editar uma pasta
+  void _editarPasta(Pasta pasta) async {
+    final nomeController = TextEditingController(text: pasta.nome);
 
-void _editarPasta(BuildContext context, Pasta pasta) async {
-  TextEditingController nomeController = TextEditingController(text: pasta.nome);
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Editar Pasta"),
-        content: TextField(
-          controller: nomeController,
-          decoration: InputDecoration(hintText: "Nome da Pasta"),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("Cancelar"),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Editar Pasta'),
+          content: TextField(
+            controller: nomeController,
+            decoration: InputDecoration(labelText: 'Nome da Pasta'),
           ),
-          TextButton(
-            onPressed: () async {
-              pasta.nome = nomeController.text;  
-              try {
-                await pastaService.atualizarPasta(pasta);  
-                setState(() {
-                  futurePastas = pastaService.getAllPastas();  
-                });
-                Navigator.of(context).pop();
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Erro ao atualizar pasta: $e')),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Fecha o diálogo sem salvar
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Atualiza a pasta com o novo nome
+                Pasta pastaAtualizada = Pasta(
+                  id: pasta.id,  // id como String
+                  nome: nomeController.text,
+                  senhas: pasta.senhas,
                 );
-              }
-            },
-            child: Text("Salvar"),
-          ),
-        ],
-      );
-    },
-  );
-}
 
+                try {
+                  await pastaService.atualizarPasta(pastaAtualizada);
+                  setState(() {
+                    futurePastas = pastaService.getAllPastas();  // Recarrega as pastas
+                  });
+                  Navigator.pop(context);  // Fecha o diálogo após salvar
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Erro ao editar pasta: $e')),
+                  );
+                }
+              },
+              child: Text('Salvar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
