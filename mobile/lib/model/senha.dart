@@ -2,22 +2,21 @@ class Senha {
   final String id;
   final String nome;
   final String senha;
-  final String pastaId;  
+  final String? pastaId; 
 
   Senha({
     required this.id,
     required this.nome,
     required this.senha,
-    required this.pastaId,  
+    this.pastaId, 
   });
-
 
   factory Senha.fromJson(Map<String, dynamic> json) {
     return Senha(
       id: json['id'],
       nome: json['nome'],
       senha: json['senha'],
-      pastaId: json['pastaId'],
+      pastaId: json['pastaId'] ?? '',  
     );
   }
 
@@ -26,7 +25,7 @@ class Senha {
       'id': id,
       'nome': nome,
       'senha': senha,
-      'pastaId': pastaId,
+      'pastaId': pastaId ?? '',  
     };
   }
 }

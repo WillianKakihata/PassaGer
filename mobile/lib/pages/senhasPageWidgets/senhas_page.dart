@@ -19,7 +19,7 @@ class _SenhasPageState extends State<SenhasPage> {
   @override
   void initState() {
     super.initState();
-    futureSenhas = widget.senhaService.getSenhasByPastaId(widget.pasta.id);
+    futureSenhas = widget.senhaService.getAllSenhas();
   }
 
   @override
@@ -39,7 +39,10 @@ class _SenhasPageState extends State<SenhasPage> {
             return Center(child: Text('Nenhuma senha encontrada.'));
           }
 
-          List<Senha> senhas = snapshot.data!;
+          // Garantir que filtramos senhas com pastaId correspondente, lidando com null
+          List<Senha> senhas = snapshot.data!
+              .where((senha) => senha.pastaId != null && senha.pastaId == widget.pasta.id.toString())
+              .toList();
 
           return ListView.builder(
             itemCount: senhas.length,
@@ -55,7 +58,7 @@ class _SenhasPageState extends State<SenhasPage> {
                   },
                 ),
                 onTap: () {
-                  _editarSenha(senha);
+                  // Lógica para editar a senha
                 },
               );
             },
@@ -70,16 +73,11 @@ class _SenhasPageState extends State<SenhasPage> {
   }
 
   void _criarSenha() async {
-    final Senha novaSenha = Senha(
-      id: "0",
-      nome: 'Nova Senha',
-      senha: '12345',
-      pastaId: widget.pasta.id,
-    );
+    final Senha novaSenha = Senha(id: "0", nome: 'Nova Senha', senha: '12345', pastaId: widget.pasta.id.toString());
     try {
-      await widget.senhaService.criarSenha(widget.pasta.id, novaSenha);
+      await widget.senhaService.criarSenha(novaSenha);
       setState(() {
-        futureSenhas = widget.senhaService.getSenhasByPastaId(widget.pasta.id);
+        futureSenhas = widget.senhaService.getAllSenhas();
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,74 +86,16 @@ class _SenhasPageState extends State<SenhasPage> {
     }
   }
 
-  void _excluirSenha(String senhaId) async {
+  void _excluirSenha(String id) async {
     try {
-      await widget.senhaService.excluirSenha(widget.pasta.id, senhaId);
+      await widget.senhaService.excluirSenha(id);
       setState(() {
-        futureSenhas = widget.senhaService.getSenhasByPastaId(widget.pasta.id);
+        futureSenhas = widget.senhaService.getAllSenhas();
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao excluir senha: $e')),
       );
     }
-  }
-
-  void _editarSenha(Senha senha) async {
-    final nomeController = TextEditingController(text: senha.nome);
-    final senhaController = TextEditingController(text: senha.senha);
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Editar Senha'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nomeController,
-                decoration: InputDecoration(labelText: 'Nome'),
-              ),
-              TextField(
-                controller: senhaController,
-                decoration: InputDecoration(labelText: 'Senha'),
-                obscureText: true,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () async {
-                Senha senhaAtualizada = Senha(
-                  id: senha.id,
-                  nome: nomeController.text,
-                  senha: senhaController.text,
-                  pastaId: senha.pastaId,
-                );
-                try {
-                  await widget.senhaService.atualizarSenha(widget.pasta.id, senhaAtualizada);
-                  setState(() {
-                    futureSenhas = widget.senhaService.getSenhasByPastaId(widget.pasta.id);
-                  });
-                  Navigator.pop(context);
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Erro ao editar senha: $e')),
-                  );
-                }
-              },
-              child: Text('Salvar'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

@@ -6,31 +6,21 @@ class SenhaService {
   final http.Client client;
   final String baseUrl;
 
-  SenhaService(this.client, {this.baseUrl = "http://localhost:3000"});
+  SenhaService(this.client, {this.baseUrl = "http://localhost:3000/senhas"});
 
   Future<List<Senha>> getAllSenhas() async {
-    final response = await client.get(Uri.parse('$baseUrl/senhas'));
+    final response = await client.get(Uri.parse(baseUrl));
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body)['senhas'];
+      List<dynamic> data = json.decode(response.body);
       return data.map((e) => Senha.fromJson(e)).toList();
     } else {
       throw Exception("Erro ao carregar senhas");
     }
   }
 
-  Future<List<Senha>> getSenhasByPastaId(String pastaId) async {
-    final response = await client.get(Uri.parse('$baseUrl/pastas/$pastaId/senhas'));
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body)['senhas'];
-      return data.map((e) => Senha.fromJson(e)).toList();
-    } else {
-      throw Exception("Erro ao carregar senhas da pasta");
-    }
-  }
-
-  Future<void> criarSenha(String pastaId, Senha senha) async {
+  Future<void> criarSenha(Senha senha) async {
     final response = await client.post(
-      Uri.parse('$baseUrl/pastas/$pastaId/senhas'),
+      Uri.parse(baseUrl),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(senha.toJson()),
     );
@@ -39,9 +29,9 @@ class SenhaService {
     }
   }
 
-  Future<void> atualizarSenha(String pastaId, Senha senha) async {
+  Future<void> atualizarSenha(Senha senha) async {
     final response = await client.put(
-      Uri.parse('$baseUrl/pastas/$pastaId/senhas/${senha.id}'),
+      Uri.parse('$baseUrl/${senha.id}'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(senha.toJson()),
     );
@@ -50,9 +40,9 @@ class SenhaService {
     }
   }
 
-  Future<void> excluirSenha(String pastaId, String senhaId) async {
+  Future<void> excluirSenha(String senhaId) async {
     final response = await client.delete(
-      Uri.parse('$baseUrl/pastas/$pastaId/senhas/$senhaId'),
+      Uri.parse('$baseUrl/$senhaId'),
     );
     if (response.statusCode != 200) {
       throw Exception("Erro ao excluir senha");
