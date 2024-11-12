@@ -39,7 +39,6 @@ class _SenhasPageState extends State<SenhasPage> {
             return Center(child: Text('Nenhuma senha encontrada.'));
           }
 
-          // Garantir que filtramos senhas com pastaId correspondente, lidando com null
           List<Senha> senhas = snapshot.data!
               .where((senha) => senha.pastaId != null && senha.pastaId == widget.pasta.id.toString())
               .toList();
@@ -58,7 +57,7 @@ class _SenhasPageState extends State<SenhasPage> {
                   },
                 ),
                 onTap: () {
-                  // Lógica para editar a senha
+                  _editarSenha(senha);
                 },
               );
             },
@@ -86,6 +85,7 @@ class _SenhasPageState extends State<SenhasPage> {
     }
   }
 
+
   void _excluirSenha(String id) async {
     try {
       await widget.senhaService.excluirSenha(id);
@@ -97,5 +97,63 @@ class _SenhasPageState extends State<SenhasPage> {
         SnackBar(content: Text('Erro ao excluir senha: $e')),
       );
     }
+  }
+
+  void _editarSenha(Senha senha) {
+    TextEditingController nomeController = TextEditingController(text: senha.nome);
+    TextEditingController senhaController = TextEditingController(text: senha.senha);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Editar Senha'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nomeController,
+                decoration: InputDecoration(labelText: 'Nome'),
+              ),
+              TextField(
+                controller: senhaController,
+                decoration: InputDecoration(labelText: 'Senha'),
+                obscureText: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  Senha senhaAtualizada = Senha(
+                    id: senha.id,
+                    nome: nomeController.text,
+                    senha: senhaController.text,
+                    pastaId: senha.pastaId,
+                  );
+                  await widget.senhaService.atualizarSenha(senhaAtualizada);
+                  setState(() {
+                    futureSenhas = widget.senhaService.getAllSenhas();
+                  });
+                  Navigator.of(context).pop();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Erro ao atualizar senha: $e')),
+                  );
+                }
+              },
+              child: Text('Salvar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

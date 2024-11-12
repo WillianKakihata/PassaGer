@@ -28,7 +28,7 @@ class PastaService {
 
   if (response.statusCode == 201) {
     var responseJson = json.decode(response.body);
-    pasta.id = responseJson['id'].toString(); // Atualiza o ID gerado pelo servidor
+    pasta.id = responseJson['id'].toString(); 
   } else {
     throw Exception("Erro ao criar pasta");
   }
